@@ -434,7 +434,7 @@ public final class JoinableFile
     {
         private boolean closed;
 
-        private ByteBuffer buf = ByteBuffer.allocateDirect( CHUNK_SIZE );
+        private final ByteBuffer buf = ByteBuffer.allocateDirect( CHUNK_SIZE );
 
         /**
          * If the stream is marked as closed, throw {@link IOException}. If the INTERNAL buffer is full, call {@link #flush()}. Then, write the byte to
@@ -470,20 +470,22 @@ public final class JoinableFile
                 throw new IOException( "Cannot write to closed stream!" );
             }
 
-            buf.flip();
             int count;
-            if ( channel != null )
+            synchronized ( buf )
             {
-                count = channel.write( buf );
-                channel.force( false );
-            }
-            else
-            {
-                throw new IllegalStateException(
-                        "File channel is null, is the file descriptor " + path + " a directory?" );
-            }
+                buf.flip();
+                if ( channel != null )
+                {
+                    count = channel.write( buf );
+                    channel.force( false );
+                }
+                else
+                {
+                    throw new IllegalStateException( "File channel is null, is the file descriptor " + path + " a directory?" );
+                }
 
-            buf.clear();
+                buf.clear();
+            }
 
             super.flush();
 
@@ -510,14 +512,17 @@ public final class JoinableFile
         {
             Logger logger = LoggerFactory.getLogger( getClass() );
             logger.trace( "OUT :: close() called" );
-            if ( closed )
+            synchronized ( buf )
             {
-                logger.trace( "OUT :: already closed" );
-                return;
+                if ( closed )
+                {
+                    logger.trace( "OUT :: already closed" );
+                    return;
+                }
+                flush();
+                super.close();
+                closed = true;
             }
-            flush();
-            super.close();
-            closed = true;
             JoinableFile.this.close();
         }
 
