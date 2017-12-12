@@ -15,7 +15,7 @@
  */
 package org.commonjava.util.partyline.callback;
 
-
+@Deprecated
 public abstract class AbstractStreamCallbacks
     implements StreamCallbacks
 {
