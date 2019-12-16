@@ -21,12 +21,12 @@
   <parent>
     <groupId>org.commonjava</groupId>
     <artifactId>commonjava</artifactId>
-    <version>12</version>
+    <version>20-SNAPSHOT</version>
   </parent>
 
   <groupId>org.commonjava.util</groupId>
   <artifactId>partyline</artifactId>
-  <version>1.16</version>
+  <version>3.0-SNAPSHOT</version>
 
   <name>partyline</name>
   <inceptionYear>2015</inceptionYear>
@@ -39,11 +39,12 @@
   </scm>
   
   <properties>
-    <weftVersion>1.12</weftVersion>
-
     <projectOwner>Red Hat, Inc.</projectOwner>
-    <javaVersion>1.8</javaVersion>
-    <byteman.version>3.0.6</byteman.version>
+    <projectEmail>nos-devel@redhat.com</projectEmail>
+    <javaVersion>11</javaVersion>
+    <weftVersion>1.20-SNAPSHOT</weftVersion>
+    <infinispanVersion>9.4.7.Final</infinispanVersion>
+    <byteman.version>4.0.9</byteman.version>
     <test-forkCount>1</test-forkCount>
 
     <plugin.jacoco.skip>false</plugin.jacoco.skip>
@@ -54,7 +55,7 @@
       <dependency>
         <groupId>org.commonjava.boms</groupId>
         <artifactId>web-commons-bom</artifactId>
-        <version>21</version>
+        <version>30-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -145,8 +146,8 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
           <configuration>
+            <argLine>-Djdk.attach.allowAttachSelf=true</argLine>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
             <forkCount>${test-forkCount}</forkCount>
             <reuseForks>false</reuseForks>
